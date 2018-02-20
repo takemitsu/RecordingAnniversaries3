@@ -13,7 +13,14 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
-    "nuxt": "^1.0.0"
+    "axios": "^0.17.1",
+    "bootstrap-vue": "^2.0.0-rc.1",
+    "element-ui": "^2.2.0",
+    "firebase": "^4.10.0",
+    "moment": "^2.20.1",
+    "nuxt": "^1.0.0",
+    "vue": "^2.5.13",
+    "vuexfire": "^2.3.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",

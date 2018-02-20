@@ -16,7 +16,7 @@ module.exports = {
   /*
   ** Customize the progress bar color
   */
-  loading: { color: '#3B8070' },
+  loading: { color: '#00d1b2' },
   /*
   ** Build configuration
   */
@@ -33,6 +33,20 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
-    }
-  }
+    },
+    vendor: [
+      'moment',
+      'axios',
+      'element-ui'
+    ]
+  },
+  modules: [
+    'bootstrap-vue/nuxt'
+  ],
+  plugins: [
+    '~/plugins/element-ui.js'
+  ],
+  css: [
+    'element-ui/lib/theme-chalk/index.css'
+  ]
 }
