@@ -26,11 +26,18 @@
       </div>
       <div class="col-sm-9">
         <el-form ref="form" :model="form" label-width="120px" v-if="user">
-          <el-form-item label="title">
+          <el-form-item label="Title">
             <el-input placeholder="title" v-model="form.body"></el-input>
           </el-form-item>
+          <el-form-item label="Date">
+            <el-date-picker
+              v-model="form.anniv_at"
+              type="date"
+              placeholder="Pick a day">
+            </el-date-picker>
+          </el-form-item>
           <el-form-item>
-            <el-button @click="doPost">Post</el-button>
+            <el-button @click="doPost" type="primary" plain>Post</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -49,7 +56,10 @@
               <p>
                 <strong>{{post.user.name}}</strong>
                 <br>
-                <span>{{post.body}}</span>
+                <span style="padding-right: 10px;">{{post.body}}</span>
+                <el-button size="mini" type="danger" plain @click="removePost(post)">X</el-button>
+                <br>
+                <span>{{dispDate(post.anniv_at)}}</span>
               </p>
             </div>
           </div>
@@ -68,13 +78,16 @@
 <script>
 import auth from '~/plugins/auth'
 import { mapGetters, mapActions } from 'vuex'
+import moment from 'moment'
 
 export default {
+
   data() {
     return {
       isLoaded: false,
       form: {
-        body: ''
+        body: '',
+        anniv_at: ''
       }
     }
   },
@@ -95,13 +108,33 @@ export default {
   },
   methods: {
     async doPost () {
+
+      if(this.form.body === '') {
+        this.$message.error('Title 入れてね');
+        return
+      }
+      if(this.form.anniv_at === '') {
+        this.$message.error('Date 入れてね');
+        return
+      }
+
       await this.$store.dispatch('ADD_POST', {
         email: this.user.email,
-        body: this.form.body
+        body: this.form.body,
+        anniv_at: moment(this.form.anniv_at).toISOString()
       })
       this.form.body = ''
+      this.form.anniv_at = ''
     },
-    ...mapActions(['callSignIn', 'callSignOut'])
+    async removePost(post) {
+      await this.$store.dispatch('REMOVE_POST', {
+        post: post
+      })
+    },
+    ...mapActions(['callSignIn', 'callSignOut']),
+    dispDate(anniv_at) {
+      return moment(anniv_at).format('YYYY-MM-DD')
+    }
   }
 }
 </script>

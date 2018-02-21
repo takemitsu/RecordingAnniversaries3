@@ -52,21 +52,28 @@ const createStore = () => {
         })
         commit('setCredential', { user })
       },
+      /*
       async INIT_SINGLE ({commit}, { id }) {
         const snapshot = await postsRef.child(id).once('value')
         commit('savePost', { post: snapshot.val() })
       },
+      */
       INIT_USERS: firebaseAction(({ bindFirebaseRef }) => {
         bindFirebaseRef('users', usersRef)
       }),
       INIT_POSTS: firebaseAction(({ bindFirebaseRef }) => {
         bindFirebaseRef('posts', postsRef)
       }),
-      ADD_POST: firebaseAction((ctx, { email, body }) => {
+      ADD_POST: firebaseAction((ctx, { email, body, anniv_at }) => {
+        console.log(anniv_at)
         postsRef.push({
           from: email,
-          body:  body
+          body:  body,
+          anniv_at: anniv_at
         })
+      }),
+      REMOVE_POST: firebaseAction((ctx, {post}) => {
+        postsRef.child(post['.key']).remove()
       }),
       callSignIn() {
         firebase.auth().signInWithRedirect(provider)
