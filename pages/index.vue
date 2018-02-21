@@ -1,33 +1,13 @@
 <template>
   <section class="container">
-
-    <div class="row" v-if="isLoaded">
-      <div class="col-sm-3">
-        <div class="media" v-if="user">
-          <figure class="media-left">
-            <p class="image is-64x64">
-              <img :src="user.photoURL">
-            </p>
-          </figure>
-          <div class="media-content">
-            <div class="content">
-              <p>
-                <strong>{{user.displayName}}</strong>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div v-if="user">
-          <el-button @click="callSignOut">SignOut</el-button>
-        </div>
-        <div class="media" v-else>
-          <el-button @click="callSignIn">Sign in With Google</el-button>
-        </div>
+    <div v-if="isLoaded">
+      <div class="media" v-if="!user">
+        <el-button @click="callSignIn">Sign in With Google</el-button>
       </div>
-      <div class="col-sm-9">
-        <el-form ref="form" :model="form" label-width="120px" v-if="user">
+      <div v-if="user">
+        <el-form ref="form" :model="form" label-width="60px" v-if="user">
           <el-form-item label="Title">
-            <el-input placeholder="title" v-model="form.body"></el-input>
+            <el-input placeholder="title" v-model="form.title"></el-input>
           </el-form-item>
           <el-form-item label="Date">
             <el-date-picker
@@ -44,27 +24,16 @@
     </div>
 
     <div class="timeline" v-if="isLoaded">
-      <ul class="posts">
-        <li class="media" :post="post" :key="post['.key']" v-for="post in posts" v-if="post.user">
-          <figure class="media-left">
-            <p class="image is-64x64">
-              <img :src="post.user.icon">
-            </p>
-          </figure>
-          <div class="media-content">
-            <div class="content">
-              <p>
-                <strong>{{post.user.name}}</strong>
-                <br>
-                <span style="padding-right: 10px;">{{post.body}}</span>
-                <el-button size="mini" type="danger" plain @click="removePost(post)">X</el-button>
-                <br>
-                <span>{{dispDate(post.anniv_at)}}</span>
-              </p>
-            </div>
+      <div class="card-columns" >
+        <div class="card"  :key="post['.key']" v-for="post in posts" v-if="post.user">
+          <div class="card-body">
+            <h5 class="card-title">{{post.title}}</h5>
+            <p class="card-text">{{dispDate(post.anniv_at)}}</p>
+            <a href="#" class="btn btn-primary">Update</a>
+            <el-button size="mini" type="danger" plain @click="removePost(post)">X</el-button>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
 
     <div class="loading-wrapper" v-else>
@@ -86,7 +55,7 @@ export default {
     return {
       isLoaded: false,
       form: {
-        body: '',
+        title: '',
         anniv_at: ''
       }
     }
@@ -109,7 +78,7 @@ export default {
   methods: {
     async doPost () {
 
-      if(this.form.body === '') {
+      if(this.form.title === '') {
         this.$message.error('Title 入れてね');
         return
       }
@@ -120,10 +89,10 @@ export default {
 
       await this.$store.dispatch('ADD_POST', {
         email: this.user.email,
-        body: this.form.body,
+        title: this.form.title,
         anniv_at: moment(this.form.anniv_at).toISOString()
       })
-      this.form.body = ''
+      this.form.title = ''
       this.form.anniv_at = ''
     },
     async removePost(post) {

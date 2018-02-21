@@ -66,11 +66,11 @@ const createStore = () => {
       INIT_POSTS: firebaseAction(({ bindFirebaseRef }) => {
         bindFirebaseRef('posts', postsRef)
       }),
-      ADD_POST: firebaseAction((ctx, { email, body, anniv_at }) => {
+      ADD_POST: firebaseAction((ctx, { email, title, anniv_at }) => {
         console.log(anniv_at)
         postsRef.push({
           from: email,
-          body:  body,
+          title:  title,
           anniv_at: anniv_at
         })
       }),
