@@ -19,7 +19,9 @@ const createStore = () => {
     },
     getters: {
       posts: state => {
-        return state.posts.map((post) => {
+        return state.posts.filter((element, index, array) => {
+          return state.user.email === element.from
+        }).map((post) => {
           post.user = state.users.find((user) => user.email === post.from)
           return post
         }).reverse()
